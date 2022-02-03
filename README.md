@@ -109,3 +109,25 @@ service/AmazonService.java
         return response.body().string();
     }
 ```
+commit - with search product call
+
+### find the regex:
+https://regex101.com/
+<br>
+service/AmazonService.java
+```java
+    public static final Pattern PRODUCT_PATTERN = Pattern.compile("<span class=\\\"a-size-medium a-color-base a-text-normal\\\">([^<]+)</span> </a> </h2></div><div class=\\\"a-section a-spacing-none a-spacing-top-micro\\\"><div class=\\\"a-row a-size-small\\\"><span aria-label=\\\"([^\\\"]+)\\\"><span.*<span class=\\\"a-offscreen\\\">([^<]+)</span>");
+
+    public String searchProducts(String keyword) throws IOException {
+        return parseProductHtml(getProductHtml(keyword));
+    }
+
+    private String parseProductHtml(String html) {
+        String res = "";
+        Matcher matcher = PRODUCT_PATTERN.matcher(html);
+        while (matcher.find()) {
+            res += matcher.group(1) + " - " + matcher.group(2) + ", price:" + matcher.group(3) + "<br>\n";
+        }
+        return res;
+    }
+```

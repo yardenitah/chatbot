@@ -6,14 +6,26 @@ import com.squareup.okhttp.Response;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class AmazonService {
 
+    public static final Pattern PRODUCT_PATTERN = Pattern.compile("<span class=\\\"a-size-medium a-color-base a-text-normal\\\">([^<]+)</span> </a> </h2></div><div class=\\\"a-section a-spacing-none a-spacing-top-micro\\\"><div class=\\\"a-row a-size-small\\\"><span aria-label=\\\"([^\\\"]+)\\\"><span.*<span class=\\\"a-offscreen\\\">([^<]+)</span>");
+
     public String searchProducts(String keyword) throws IOException {
-        return getProductHtml(keyword);
+        return parseProductHtml(getProductHtml(keyword));
     }
 
+    private String parseProductHtml(String html) {
+        String res = "";
+        Matcher matcher = PRODUCT_PATTERN.matcher(html);
+        while (matcher.find()) {
+            res += matcher.group(1) + " - " + matcher.group(2) + ", price:" + matcher.group(3) + "<br>\n";
+        }
+        return res;
+    }
     private String getProductHtml(String keyword) throws IOException {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
