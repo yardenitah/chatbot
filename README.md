@@ -33,21 +33,6 @@ public class SwaggerConfig {
     }
 }
 ```
-controller/BotController.java
-```java
-@Configuration
-@EnableSwagger2
-public class SwaggerConfig {
-    @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
-                .build();
-    }
-}
-```
 service/AmazonService.java
 ```java
 @Service
@@ -69,7 +54,7 @@ public class BotController {
     AmazonService amazonService;
 
     @RequestMapping(value = "/amazon", method = RequestMethod.GET)
-    public ResponseEntity<?> getOneStudent(@RequestParam String keyword)
+    public ResponseEntity<?> getProduct(@RequestParam String keyword)
     {
         return new ResponseEntity<>(amazonService.searchProducts(keyword), HttpStatus.OK);
     }
@@ -199,6 +184,7 @@ service/WeatherService.java
         }
     }
 ```
+
 ```java
 
     static class WeatherLocationData {
@@ -242,3 +228,65 @@ service/WeatherService.java
 
 ```
 commit - with weather
+
+<br>
+https://dialogflow.cloud.google.com/
+<br>
+https://webhook.site/
+<br>
+
+controller/BotController.java
+```java
+
+    @RequestMapping(value = "", method = { RequestMethod.POST})
+    public ResponseEntity<?> getBotResponse(@RequestBody BotQuery query) throws IOException {
+        HashMap<String, String> params = query.getQueryResult().getParameters();
+        String res = "Not found";
+        if (params.containsKey("city")) {
+            res = weatherService.searchWeather(params.get("city"));
+        } else if (params.containsKey("product")) {
+            res = amazonService.searchProducts(params.get("product"));
+        }
+        return new ResponseEntity<>(BotResponse.of(res), HttpStatus.OK);
+    }
+
+
+    static class BotQuery {
+        QueryResult queryResult;
+
+        public QueryResult getQueryResult() {
+            return queryResult;
+        }
+    }
+
+    static class QueryResult {
+        HashMap<String, String> parameters;
+
+        public HashMap<String, String> getParameters() {
+            return parameters;
+        }
+    }
+
+    static class BotResponse {
+        String fulfillmentText;
+        String source = "BOT";
+
+        public String getFulfillmentText() {
+            return fulfillmentText;
+        }
+
+        public String getSource() {
+            return source;
+        }
+
+        public static BotResponse of(String fulfillmentText) {
+            BotResponse res = new BotResponse();
+            res.fulfillmentText = fulfillmentText;
+            return res;
+        }
+    }
+```
+commit - with bot response
+<br>
+https://www.heroku.com/
+fork if needed
