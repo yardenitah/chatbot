@@ -64,6 +64,14 @@ http://localhost:8080/swagger-ui.html#
 <br>
 commit - with swagger
 ###Find the search api
+pom.xml
+```
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.8.1</version>
+        </dependency>
+```
 https://www.amazon.com/s?k=ipod
 <br>
 service/AmazonService.java
@@ -120,6 +128,9 @@ service/AmazonService.java
 ```
 commit - with product regex
 ### weather search
+##### NOTE! the weather api had changed and will not be the same as in the video
+##### please work on this jokes api instead: https://api.chucknorris.io/jokes/search?query=big
+
 https://www.yahoo.com/news/weather/
 <br>
 
