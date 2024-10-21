@@ -35,28 +35,8 @@ public class BotController {
 
     // Bot endpoint to handle weather queries using a query parameter for the city
     @RequestMapping(value = "/weather", method = {RequestMethod.GET})
-    public ResponseEntity<?> getWeather(@RequestParam String city) throws IOException {
+    public ResponseEntity<String> getWeather(@RequestParam String city) throws IOException {
         String res = weatherService.getWeatherForCity(city);
-        return new ResponseEntity<>(BotResponse.of(res), HttpStatus.OK);
-    }
-
-    // Define BotResponse class
-    public static class BotResponse {
-        private String fulfillmentText;
-        private String source = "BOT";
-
-        public String getFulfillmentText() {
-            return fulfillmentText;
-        }
-
-        public void setFulfillmentText(String fulfillmentText) {
-            this.fulfillmentText = fulfillmentText;
-        }
-
-        public static BotResponse of(String fulfillmentText) {
-            BotResponse res = new BotResponse();
-            res.setFulfillmentText(fulfillmentText);
-            return res;
-        }
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }
