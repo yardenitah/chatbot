@@ -18,8 +18,44 @@ public class WeatherService {
     private String apiKey;
 
     // Method to get weather details for a given city name
+//    public String getWeatherForCity(String city) throws IOException {
+//        OkHttpClient client = new OkHttpClient();
+//
+//        Request request = new Request.Builder()
+//                .url("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey + "&units=metric")
+//                .method("GET", null)
+//                .build();
+//
+//        Response response = client.newCall(request).execute();
+//        String res = response.body().string();
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        WeatherData weatherData = objectMapper.readValue(res, WeatherData.class);
+//
+//        try {
+//            // Formatting the weather details
+//            StringBuilder weatherDetails = new StringBuilder();
+//            weatherDetails.append("Weather: ").append(weatherData.getWeather().get(0).getDescription()).append("\n");
+//            weatherDetails.append("Temperature: ").append(weatherData.getMain().getTemp()).append(" °C\n");
+//            weatherDetails.append("Feels Like: ").append(weatherData.getMain().getFeels_like()).append(" °C\n");
+//            weatherDetails.append("Humidity: ").append(weatherData.getMain().getHumidity()).append("%\n");
+//            weatherDetails.append("Wind Speed: ").append(weatherData.getWind().getSpeed()).append(" m/s");
+//
+//            return weatherDetails.toString();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "Weather details not found";
+//        }
+//    }
+
+    // Method to get weather details for a given city name
     public String getWeatherForCity(String city) throws IOException {
         OkHttpClient client = new OkHttpClient();
+
+        // Add ",IL" country code for cities in Israel
+        if (!city.toLowerCase().contains("il")) {
+            city = city + ",IL";
+        }
 
         Request request = new Request.Builder()
                 .url("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey + "&units=metric")
@@ -48,6 +84,9 @@ public class WeatherService {
         }
     }
 
+
+
+
     // Nested class to represent weather data
     @JsonIgnoreProperties(ignoreUnknown = true)  // Ignore unrecognized fields
     public static class WeatherData {
@@ -57,10 +96,6 @@ public class WeatherService {
 
         public List<Weather> getWeather() {
             return weather;
-        }
-
-        public void setWeather(List<Weather> weather) {
-            this.weather = weather;
         }
 
         public Main getMain() {
